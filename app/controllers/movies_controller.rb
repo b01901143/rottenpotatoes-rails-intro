@@ -11,16 +11,14 @@ class MoviesController < ApplicationController
   end
 
   def index
-    session[:ratings] = params[:ratings] if params[:ratings]
-    session[:sort_by] = params[:sort_by] if params[:sort_by]
     
-    @all_ratings = Movie.ratings.map { |rating| {name: rating, value: session[:ratings] ? session[:ratings].include?(rating) : true} }
-    @movies = session[:ratings]&.any? ? Movie.with_ratings(session[:ratings].keys) : Movie.all
+    @all_ratings = Movie.ratings.map { |rating| {name: rating, value: params[:ratings] ? params[:ratings].include?(rating) : true} }
+    @movies = params[:ratings]&.any? ? Movie.with_ratings(params[:ratings].keys) : Movie.all
 
-    if session[:sort_by]
-      @movies = @movies.order(session[:sort_by])
-      @title_header = 'hilite' if session[:sort_by] == 'title'
-      @release_date_header = 'hilite' if session[:sort_by] == 'release_date'
+    if params[:sort_by]
+      @movies = @movies.order(params[:sort_by])
+      @title_header = 'hilite' if params[:sort_by] == 'title'
+      @release_date_header = 'hilite' if params[:sort_by] == 'release_date'
     end
 
   end
